@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quotes Futuristik</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway&family=Great+Vibes&family=Pacifico&family=Cinzel&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade&family=Lateef&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    body.light {
+      background-color: #f9f9f9;
+      color: #111;
+    }
+
+    h2 { margin-bottom: 14px; color: #00f3ff; }
+
+    .input-box {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    textarea {
+      min-height: 90px;
+      border: 1px solid #00f3ff;
+      background: #1a1f3c;
+      color: #fff;
+      text-align: center;
+    }
+    body.light textarea {
+      background: #fff;
+      color: #000;
+      border: 1px solid #00c3cc;
+    }
+
+    select, button {
+      border: 1px solid #00f3ff;
+      background: #1a1f3c;
+      color: #00f3ff;
+    }
+    button {
+      background: #00f3ff;
+      color: #0a0f1e;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #0ef; }
+
+    .output {
+      margin-top: 20px;
+      font-size: 1.6rem;
+      display: inline-block;
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .mode-toggle {
+      margin-top: 10px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #00f3ff;
+      text-decoration: underline;
+    }
+    body.light .mode-toggle { color: #00a0aa; }
+  </style>
+</head>
+<body>
+  <h2>Quotes Futuristik</h2>
+
+  <div class="input-box">
+    <textarea id="inputText" placeholder="Tulis quotes di sini..."></textarea>
+    
+    <select id="fontSelect">
+      <optgroup label="Font Latin (Instagram Style)">
+        <option value="Montserrat" selected>Montserrat</option>
+        <option value="Raleway">Raleway</option>
+        <option value="Great Vibes">Great Vibes</option>
+        <option value="Pacifico">Pacifico</option>
+        <option value="Cinzel">Cinzel</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Courier New">Typewriter (Courier New)</option>
+      </optgroup>
+      <optgroup label="Font Arab">
+        <option value="Amiri">Amiri</option>
+        <option value="Scheherazade">Scheherazade</option>
+        <option value="Lateef">Lateef</option>
+      </optgroup>
+    </select>
+
+    <select id="colorSelect">
+      <option value="tosca" selected>Tosca</option>
+      <option value="green">Hijau</option>
+      <option value="white">Putih</option>
+    </select>
+
+    <button onclick="konversiTeks()">Konversi</button>
+    <button onclick="downloadPNG()">Download PNG Transparan</button>
+    <button class="mode-toggle" onclick="toggleMode()">Ganti Mode (Gelap/Terang)</button>
+  </div>
+
+  <div class="output" id="outputText"></div>
+
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    function konversiTeks() {
+      const input = document.getElementById('inputText').value.trim();
+      const output = document.getElementById('outputText');
+      const font = document.getElementById('fontSelect').value;
+      const color = document.getElementById('colorSelect').value;
+
+      if (input === "") {
+        output.textContent = "Silakan tulis sesuatu dulu!";
+      } else {
+        output.textContent = input;
+      }
+
+      const fallback = (font.includes('Courier') || font === 'Georgia' || font === 'Times New Roman' || font === 'Cinzel') ? 'serif' : 'sans-serif';
+      output.style.fontFamily = `"${font}", ${fallback}`;
+
+      let textColor = "#00f3ff";
+      if (color === "green") textColor = "#39ff14";
+      else if (color === "white") textColor = "#fff";
+      output.style.color = textColor;
+
+      output.classList.remove("fade-in");
+      void output.offsetWidth;
+      output.classList.add("fade-in");
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("light");
+    }
+
+    function downloadPNG() {
+      const output = document.getElementById("outputText");
+      if (!output.textContent.trim()) {
+        alert("Silakan konversi teks dulu!");
+        return;
+      }
+
+      html2canvas(output, { backgroundColor: null }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "quotes.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
