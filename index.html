@@ -114,10 +114,6 @@
       background: none;
       border: none;
       padding: 0;
-
-      /* tambahan agar teks tetap jelas di PNG transparan */
-      -webkit-text-stroke: 1px #000;   /* outline hitam tipis */
-      text-shadow: 0 0 3px rgba(0,0,0,0.6); /* bayangan lembut */
     }
 
     .fade-in {
@@ -177,6 +173,7 @@
 
   <div class="output" id="outputText"></div>
 
+  <!-- html2canvas untuk konversi jadi gambar -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     function konversiTeks() {
@@ -210,8 +207,7 @@
       const output = document.getElementById("outputText");
 
       html2canvas(output, {
-        backgroundColor: null, // transparan
-        removeContainer: true,
+        backgroundColor: getComputedStyle(document.body).backgroundColor,
         scale: 3
       }).then(canvas => {
         const link = document.createElement("a");
