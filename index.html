@@ -152,7 +152,7 @@
 
     <select id="colorSelect">
       <option value="#00f3ff" selected>Tosca</option>
-      <option value="#39ff14">Hijau</option>
+      <option value="#39ff14">Hijau Neon</option>
       <option value="#ffffff">Putih</option>
       <option value="#ff0000">Merah</option>
       <option value="#ffa500">Oranye</option>
@@ -162,19 +162,25 @@
       <option value="#00ced1">Turquoise</option>
       <option value="#a52a2a">Cokelat</option>
       <option value="#000000">Hitam</option>
+      <option value="#1e90ff">Biru Dodger</option>
+      <option value="#add8e6">Biru Muda</option>
+      <option value="#008000">Hijau Tua</option>
+      <option value="#ffd700">Emas</option>
+      <option value="#c0c0c0">Perak</option>
+      <option value="#ff4500">Oranye Tua</option>
+      <option value="#2e8b57">Sea Green</option>
+      <option value="#4b0082">Indigo</option>
+      <option value="#dc143c">Crimson</option>
     </select>
 
     <input type="number" id="fontSize" value="22" min="10" max="100" />
 
     <button onclick="konversiTeks()">Konversi</button>
     <button onclick="toggleMode()">Mode Terang/Gelap</button>
-    <button onclick="downloadJPG()">Download JPG</button>
   </div>
 
   <div class="output" id="outputText"></div>
 
-  <!-- html2canvas untuk konversi jadi gambar -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     function konversiTeks() {
       const input = document.getElementById('inputText').value.trim();
@@ -201,20 +207,6 @@
 
     function toggleMode() {
       document.body.classList.toggle("light");
-    }
-
-    function downloadJPG() {
-      const output = document.getElementById("outputText");
-
-      html2canvas(output, {
-        backgroundColor: getComputedStyle(document.body).backgroundColor,
-        scale: 3
-      }).then(canvas => {
-        const link = document.createElement("a");
-        link.download = "quotes.jpg";
-        link.href = canvas.toDataURL("image/jpeg", 0.95); // format JPG
-        link.click();
-      });
     }
   </script>
 </body>
