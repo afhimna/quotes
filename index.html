@@ -168,7 +168,7 @@
 
     <button onclick="konversiTeks()">Konversi</button>
     <button onclick="toggleMode()">Mode Terang/Gelap</button>
-    <button onclick="downloadPNG()">Download PNG</button>
+    <button onclick="downloadJPG()">Download JPG</button>
   </div>
 
   <div class="output" id="outputText"></div>
@@ -203,7 +203,7 @@
       document.body.classList.toggle("light");
     }
 
-    function downloadPNG() {
+    function downloadJPG() {
       const output = document.getElementById("outputText");
 
       html2canvas(output, {
@@ -211,8 +211,8 @@
         scale: 3
       }).then(canvas => {
         const link = document.createElement("a");
-        link.download = "quotes.png";
-        link.href = canvas.toDataURL("image/png");
+        link.download = "quotes.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 0.95); // format JPG
         link.click();
       });
     }
