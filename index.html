@@ -10,120 +10,96 @@
   <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade&family=Lateef&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --bg-dark: #000;
-      --text-dark: #fff;
-      --bg-light: #fdfdfd;
-      --text-light: #111;
-      --accent: #00f3ff;
-    }
-
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-dark);
+      background-color: #000;
+      color: #fff;
       margin: 0;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: flex-start;
       min-height: 100vh;
       text-align: center;
-      transition: background 0.4s, color 0.4s;
+      transition: all 0.3s ease;
     }
-
     body.light {
-      background-color: var(--bg-light);
-      color: var(--text-light);
+      background-color: #f9f9f9;
+      color: #111;
     }
 
-    h2 {
-      font-size: 1.3rem;
-      margin-bottom: 14px;
-      color: var(--accent);
-    }
+    h2 { margin-bottom: 14px; color: #00f3ff; }
 
     .input-box {
       width: 100%;
-      max-width: 400px;
+      max-width: 360px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
     }
 
-    textarea {
+    textarea, select, button {
       width: 100%;
-      min-height: 90px;
       padding: 10px;
-      border: none;
       border-radius: 6px;
-      font-size: 14px;
-      outline: none;
+      font-size: 13px;
+    }
+
+    textarea {
+      min-height: 90px;
+      border: 1px solid #00f3ff;
       background: #1a1f3c;
       color: #fff;
-      border: 1px solid var(--accent);
-      resize: vertical;
       text-align: center;
     }
-
     body.light textarea {
-      background: #f2f2f7;
+      background: #fff;
       color: #000;
+      border: 1px solid #00c3cc;
     }
 
-    select, input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--accent);
+    select, button {
+      border: 1px solid #00f3ff;
       background: #1a1f3c;
-      color: var(--accent);
-      font-size: 13px;
+      color: #00f3ff;
     }
-
-    body.light select, body.light input[type="number"] {
-      background: #f2f2f7;
-      color: #000;
-    }
-
     button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 13px;
-      background: var(--accent);
+      background: #00f3ff;
       color: #0a0f1e;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
     }
-
-    button:hover {
-      background: #0ef;
-    }
+    button:hover { background: #0ef; }
 
     .output {
       margin-top: 20px;
-      font-size: 1.2rem;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-      max-width: 90%;
+      font-size: 1.6rem;
       display: inline-block;
-      background: none; /* tanpa kotak */
       border: none;
       padding: 0;
+      background: transparent;
     }
 
     .fade-in {
       animation: fadeIn 0.6s ease-in-out;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
+
+    .mode-toggle {
+      margin-top: 10px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #00f3ff;
+      text-decoration: underline;
+    }
+    body.light .mode-toggle { color: #00a0aa; }
   </style>
 </head>
 <body>
@@ -133,7 +109,7 @@
     <textarea id="inputText" placeholder="Tulis quotes di sini..."></textarea>
     
     <select id="fontSelect">
-      <optgroup label="Font Latin">
+      <optgroup label="Font Latin (Instagram Style)">
         <option value="Montserrat" selected>Montserrat</option>
         <option value="Raleway">Raleway</option>
         <option value="Great Vibes">Great Vibes</option>
@@ -151,47 +127,41 @@
     </select>
 
     <select id="colorSelect">
-      <option value="#00f3ff" selected>Tosca</option>
-      <option value="#39ff14">Hijau</option>
-      <option value="#ffffff">Putih</option>
-      <option value="#ff0000">Merah</option>
-      <option value="#ffa500">Oranye</option>
-      <option value="#ffff00">Kuning</option>
-      <option value="#800080">Ungu</option>
-      <option value="#ff69b4">Pink</option>
-      <option value="#00ced1">Turquoise</option>
-      <option value="#a52a2a">Cokelat</option>
-      <option value="#000000">Hitam</option>
+      <option value="tosca" selected>Tosca</option>
+      <option value="green">Hijau</option>
+      <option value="white">Putih</option>
     </select>
 
-    <input type="number" id="fontSize" value="22" min="10" max="100" />
-
     <button onclick="konversiTeks()">Konversi</button>
-    <button onclick="toggleMode()">Mode Terang/Gelap</button>
-    <button onclick="downloadPNG()">Download PNG</button>
+    <button onclick="downloadPNG()">Download PNG Transparan</button>
+    <button class="mode-toggle" onclick="toggleMode()">Ganti Mode (Gelap/Terang)</button>
   </div>
 
   <div class="output" id="outputText"></div>
 
+  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <script>
     function konversiTeks() {
       const input = document.getElementById('inputText').value.trim();
       const output = document.getElementById('outputText');
       const font = document.getElementById('fontSelect').value;
       const color = document.getElementById('colorSelect').value;
-      const size = document.getElementById('fontSize').value;
 
       if (input === "") {
         output.textContent = "Silakan tulis sesuatu dulu!";
       } else {
-        output.innerHTML = input.replace(/\n/g, "<br>");
+        output.textContent = input;
       }
 
       const fallback = (font.includes('Courier') || font === 'Georgia' || font === 'Times New Roman' || font === 'Cinzel') ? 'serif' : 'sans-serif';
       output.style.fontFamily = `"${font}", ${fallback}`;
-      output.style.color = color;
-      output.style.fontSize = size + "px";
+
+      let textColor = "#00f3ff";
+      if (color === "green") textColor = "#39ff14";
+      else if (color === "white") textColor = "#fff";
+      output.style.color = textColor;
 
       output.classList.remove("fade-in");
       void output.offsetWidth;
@@ -204,23 +174,12 @@
 
     function downloadPNG() {
       const output = document.getElementById("outputText");
+      if (!output.textContent.trim()) {
+        alert("Silakan konversi teks dulu!");
+        return;
+      }
 
-      html2canvas(output, {
-        backgroundColor: null,
-        removeContainer: true,
-        scale: 3
-      }).then(canvas => {
-        const ctx = canvas.getContext("2d");
-
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          if (data[i] === 0 && data[i+1] === 0 && data[i+2] === 0) {
-            data[i+3] = 0; // hapus pixel hitam sisa
-          }
-        }
-        ctx.putImageData(imageData, 0, 0);
-
+      html2canvas(output, { backgroundColor: null }).then(canvas => {
         const link = document.createElement("a");
         link.download = "quotes.png";
         link.href = canvas.toDataURL("image/png");
