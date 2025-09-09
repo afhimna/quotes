@@ -114,6 +114,10 @@
       background: none;
       border: none;
       padding: 0;
+
+      /* tambahan agar teks tetap jelas di PNG transparan */
+      -webkit-text-stroke: 1px #000;   /* outline hitam tipis */
+      text-shadow: 0 0 3px rgba(0,0,0,0.6); /* bayangan lembut */
     }
 
     .fade-in {
@@ -204,10 +208,9 @@
 
     function downloadPNG() {
       const output = document.getElementById("outputText");
-      const bgColor = window.getComputedStyle(document.body).backgroundColor;
 
       html2canvas(output, {
-        backgroundColor: bgColor, // pakai warna background body (hitam/putih sesuai mode)
+        backgroundColor: null, // transparan
         removeContainer: true,
         scale: 3
       }).then(canvas => {
