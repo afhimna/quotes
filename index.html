@@ -10,96 +10,120 @@
   <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade&family=Lateef&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg-dark: #000;
+      --text-dark: #fff;
+      --bg-light: #fdfdfd;
+      --text-light: #111;
+      --accent: #00f3ff;
+    }
+
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: #000;
-      color: #fff;
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
       margin: 0;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
       text-align: center;
-      transition: all 0.3s ease;
-    }
-    body.light {
-      background-color: #f9f9f9;
-      color: #111;
+      transition: background 0.4s, color 0.4s;
     }
 
-    h2 { margin-bottom: 14px; color: #00f3ff; }
+    body.light {
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: var(--accent);
+    }
 
     .input-box {
       width: 100%;
-      max-width: 360px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
     }
 
-    textarea, select, button {
+    textarea {
       width: 100%;
+      min-height: 90px;
       padding: 10px;
+      border: none;
       border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      background: #1a1f3c;
+      color: #fff;
+      border: 1px solid var(--accent);
+      resize: vertical;
+      text-align: center;
+    }
+
+    body.light textarea {
+      background: #f2f2f7;
+      color: #000;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--accent);
+      background: #1a1f3c;
+      color: var(--accent);
       font-size: 13px;
     }
 
-    textarea {
-      min-height: 90px;
-      border: 1px solid #00f3ff;
-      background: #1a1f3c;
-      color: #fff;
-      text-align: center;
-    }
-    body.light textarea {
-      background: #fff;
+    body.light select, body.light input[type="number"] {
+      background: #f2f2f7;
       color: #000;
-      border: 1px solid #00c3cc;
     }
 
-    select, button {
-      border: 1px solid #00f3ff;
-      background: #1a1f3c;
-      color: #00f3ff;
-    }
     button {
-      background: #00f3ff;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--accent);
       color: #0a0f1e;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
-    button:hover { background: #0ef; }
+
+    button:hover {
+      background: #0ef;
+    }
 
     .output {
       margin-top: 20px;
-      font-size: 1.6rem;
+      font-size: 1.2rem;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      max-width: 90%;
       display: inline-block;
+      background: none;
       border: none;
       padding: 0;
-      background: transparent;
     }
 
     .fade-in {
       animation: fadeIn 0.6s ease-in-out;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-
-    .mode-toggle {
-      margin-top: 10px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: #00f3ff;
-      text-decoration: underline;
-    }
-    body.light .mode-toggle { color: #00a0aa; }
   </style>
 </head>
 <body>
@@ -109,7 +133,7 @@
     <textarea id="inputText" placeholder="Tulis quotes di sini..."></textarea>
     
     <select id="fontSelect">
-      <optgroup label="Font Latin (Instagram Style)">
+      <optgroup label="Font Latin">
         <option value="Montserrat" selected>Montserrat</option>
         <option value="Raleway">Raleway</option>
         <option value="Great Vibes">Great Vibes</option>
@@ -127,41 +151,47 @@
     </select>
 
     <select id="colorSelect">
-      <option value="tosca" selected>Tosca</option>
-      <option value="green">Hijau</option>
-      <option value="white">Putih</option>
+      <option value="#00f3ff" selected>Tosca</option>
+      <option value="#39ff14">Hijau</option>
+      <option value="#ffffff">Putih</option>
+      <option value="#ff0000">Merah</option>
+      <option value="#ffa500">Oranye</option>
+      <option value="#ffff00">Kuning</option>
+      <option value="#800080">Ungu</option>
+      <option value="#ff69b4">Pink</option>
+      <option value="#00ced1">Turquoise</option>
+      <option value="#a52a2a">Cokelat</option>
+      <option value="#000000">Hitam</option>
     </select>
 
+    <input type="number" id="fontSize" value="22" min="10" max="100" />
+
     <button onclick="konversiTeks()">Konversi</button>
-    <button onclick="downloadPNG()">Download PNG Transparan</button>
-    <button class="mode-toggle" onclick="toggleMode()">Ganti Mode (Gelap/Terang)</button>
+    <button onclick="toggleMode()">Mode Terang/Gelap</button>
+    <button onclick="downloadPNG()">Download PNG</button>
   </div>
 
   <div class="output" id="outputText"></div>
 
-  <!-- html2canvas -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <script>
     function konversiTeks() {
       const input = document.getElementById('inputText').value.trim();
       const output = document.getElementById('outputText');
       const font = document.getElementById('fontSelect').value;
       const color = document.getElementById('colorSelect').value;
+      const size = document.getElementById('fontSize').value;
 
       if (input === "") {
         output.textContent = "Silakan tulis sesuatu dulu!";
       } else {
-        output.textContent = input;
+        output.innerHTML = input.replace(/\n/g, "<br>");
       }
 
       const fallback = (font.includes('Courier') || font === 'Georgia' || font === 'Times New Roman' || font === 'Cinzel') ? 'serif' : 'sans-serif';
       output.style.fontFamily = `"${font}", ${fallback}`;
-
-      let textColor = "#00f3ff";
-      if (color === "green") textColor = "#39ff14";
-      else if (color === "white") textColor = "#fff";
-      output.style.color = textColor;
+      output.style.color = color;
+      output.style.fontSize = size + "px";
 
       output.classList.remove("fade-in");
       void output.offsetWidth;
@@ -174,12 +204,13 @@
 
     function downloadPNG() {
       const output = document.getElementById("outputText");
-      if (!output.textContent.trim()) {
-        alert("Silakan konversi teks dulu!");
-        return;
-      }
+      const bgColor = window.getComputedStyle(document.body).backgroundColor;
 
-      html2canvas(output, { backgroundColor: null }).then(canvas => {
+      html2canvas(output, {
+        backgroundColor: bgColor, // pakai warna background body (hitam/putih sesuai mode)
+        removeContainer: true,
+        scale: 3
+      }).then(canvas => {
         const link = document.createElement("a");
         link.download = "quotes.png";
         link.href = canvas.toDataURL("image/png");
