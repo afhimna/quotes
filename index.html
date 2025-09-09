@@ -9,11 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Raleway&family=Great+Vibes&family=Pacifico&family=Cinzel&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade&family=Lateef&display=swap" rel="stylesheet">
 
+  <!-- html2canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
-      background-color: #000;
-      color: #fff;
       margin: 0;
       padding: 20px;
       display: flex;
@@ -22,14 +23,21 @@
       justify-content: flex-start;
       min-height: 100vh;
       text-align: center;
+      background: #000;
+      color: #fff;
       transition: all 0.3s ease;
     }
+
     body.light {
-      background-color: #f9f9f9;
+      background: #f4f4f4;
       color: #111;
     }
 
-    h2 { margin-bottom: 14px; color: #00f3ff; }
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      color: #00f3ff;
+    }
 
     .input-box {
       width: 100%;
@@ -40,76 +48,130 @@
       gap: 10px;
     }
 
-    textarea, select, button {
+    textarea {
       width: 100%;
+      min-height: 90px;
       padding: 10px;
+      border: none;
       border-radius: 6px;
       font-size: 13px;
-    }
-
-    textarea {
-      min-height: 90px;
-      border: 1px solid #00f3ff;
+      outline: none;
       background: #1a1f3c;
       color: #fff;
+      border: 1px solid #00f3ff;
+      resize: vertical;
       text-align: center;
     }
+
     body.light textarea {
       background: #fff;
-      color: #000;
-      border: 1px solid #00c3cc;
+      color: #111;
+      border: 1px solid #00f3ff;
     }
 
-    select, button {
+    select, input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
       border: 1px solid #00f3ff;
       background: #1a1f3c;
       color: #00f3ff;
+      font-size: 13px;
     }
+
+    body.light select, body.light input[type="number"] {
+      background: #fff;
+      color: #111;
+    }
+
     button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
       background: #00f3ff;
       color: #0a0f1e;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
     }
-    button:hover { background: #0ef; }
+
+    button:hover {
+      background: #0ef;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .toolbar button {
+      background: #1a1f3c;
+      border: 1px solid #00f3ff;
+      color: #00f3ff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    body.light .toolbar button {
+      background: #fff;
+      color: #111;
+    }
+
+    .toolbar button:hover {
+      background: #00f3ff;
+      color: #0a0f1e;
+    }
 
     .output {
       margin-top: 20px;
       font-size: 1.6rem;
       display: inline-block;
+      background: transparent;
       border: none;
       padding: 0;
-      background: transparent;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-align: center;
     }
 
     .fade-in {
       animation: fadeIn 0.6s ease-in-out;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .mode-toggle {
-      margin-top: 10px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: #00f3ff;
-      text-decoration: underline;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      padding: 6px 10px;
+      font-size: 12px;
     }
-    body.light .mode-toggle { color: #00a0aa; }
   </style>
 </head>
 <body>
+  <button class="mode-toggle" onclick="toggleMode()">🌙/☀️</button>
+
   <h2>Quotes Futuristik</h2>
 
   <div class="input-box">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <button type="button" onclick="formatText('b')"><b>B</b></button>
+      <button type="button" onclick="formatText('i')"><i>I</i></button>
+      <button type="button" onclick="formatText('u')"><u>U</u></button>
+    </div>
+
     <textarea id="inputText" placeholder="Tulis quotes di sini..."></textarea>
-    
+
     <select id="fontSelect">
-      <optgroup label="Font Latin (Instagram Style)">
+      <optgroup label="Font Latin">
         <option value="Montserrat" selected>Montserrat</option>
         <option value="Raleway">Raleway</option>
         <option value="Great Vibes">Great Vibes</option>
@@ -117,7 +179,7 @@
         <option value="Cinzel">Cinzel</option>
         <option value="Times New Roman">Times New Roman</option>
         <option value="Georgia">Georgia</option>
-        <option value="Courier New">Typewriter (Courier New)</option>
+        <option value="Courier New">Courier New</option>
       </optgroup>
       <optgroup label="Font Arab">
         <option value="Amiri">Amiri</option>
@@ -127,20 +189,26 @@
     </select>
 
     <select id="colorSelect">
-      <option value="tosca" selected>Tosca</option>
-      <option value="green">Hijau</option>
-      <option value="white">Putih</option>
+      <option value="#00f3ff" selected>Tosca</option>
+      <option value="#39ff14">Hijau</option>
+      <option value="#ffffff">Putih</option>
+      <option value="#ff007f">Pink Neon</option>
+      <option value="#ffd700">Emas</option>
+      <option value="#ff4500">Oranye</option>
+      <option value="#ff0000">Merah</option>
+      <option value="#9400d3">Ungu</option>
+      <option value="#00ced1">Turquoise</option>
+      <option value="#8b4513">Cokelat</option>
+      <option value="#708090">Abu-abu</option>
     </select>
 
+    <input type="number" id="fontSize" min="10" max="80" value="24" />
+
     <button onclick="konversiTeks()">Konversi</button>
-    <button onclick="downloadPNG()">Download PNG Transparan</button>
-    <button class="mode-toggle" onclick="toggleMode()">Ganti Mode (Gelap/Terang)</button>
+    <button onclick="downloadPNG()">Download PNG</button>
   </div>
 
   <div class="output" id="outputText"></div>
-
-  <!-- html2canvas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
     function konversiTeks() {
@@ -148,24 +216,35 @@
       const output = document.getElementById('outputText');
       const font = document.getElementById('fontSelect').value;
       const color = document.getElementById('colorSelect').value;
+      const size = document.getElementById('fontSize').value;
 
       if (input === "") {
         output.textContent = "Silakan tulis sesuatu dulu!";
       } else {
-        output.textContent = input;
+        output.innerHTML = input.replace(/\n/g, "<br>");
       }
 
       const fallback = (font.includes('Courier') || font === 'Georgia' || font === 'Times New Roman' || font === 'Cinzel') ? 'serif' : 'sans-serif';
       output.style.fontFamily = `"${font}", ${fallback}`;
-
-      let textColor = "#00f3ff";
-      if (color === "green") textColor = "#39ff14";
-      else if (color === "white") textColor = "#fff";
-      output.style.color = textColor;
+      output.style.color = color;
+      output.style.fontSize = size + "px";
 
       output.classList.remove("fade-in");
       void output.offsetWidth;
       output.classList.add("fade-in");
+    }
+
+    function formatText(tag) {
+      const textarea = document.getElementById("inputText");
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+
+      if (start !== end) {
+        const selectedText = textarea.value.substring(start, end);
+        const before = textarea.value.substring(0, start);
+        const after = textarea.value.substring(end);
+        textarea.value = before + `<${tag}>` + selectedText + `</${tag}>` + after;
+      }
     }
 
     function toggleMode() {
@@ -174,12 +253,9 @@
 
     function downloadPNG() {
       const output = document.getElementById("outputText");
-      if (!output.textContent.trim()) {
-        alert("Silakan konversi teks dulu!");
-        return;
-      }
-
-      html2canvas(output, { backgroundColor: null }).then(canvas => {
+      html2canvas(output, {
+        backgroundColor: null, // transparan
+      }).then(canvas => {
         const link = document.createElement("a");
         link.download = "quotes.png";
         link.href = canvas.toDataURL("image/png");
@@ -188,4 +264,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
