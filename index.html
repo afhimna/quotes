@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AFHIMNA Futuristic Generator</title>
+
+<!-- GOOGLE FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Orbitron:wght@400;700&family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;600&family=Roboto:wght@400;600&family=Amiri&family=Scheherazade+New&family=Lateef&family=Aref+Ruqaa&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+
+<style>
+
+/* ===== CUSTOM FONTS ===== */
+@font-face { font-family:'Abdomaster'; src:url('./fonts/abdomaster-semibold.ttf'); }
+@font-face { font-family:'Abo2Sadam'; src:url('./fonts/abo2sadam_regular.ttf'); }
+@font-face { font-family:'Abomsaab'; src:url('./fonts/abomsaab_regular.ttf'); }
+@font-face { font-family:'AdvertisingBold'; src:url('./fonts/advertisingbold_regular.ttf'); }
+@font-face { font-family:'ArslanWessam'; src:url('./fonts/ArslanWessamA.ttf'); }
+@font-face { font-family:'BArabics'; src:url('./fonts/BArabics.ttf'); }
+@font-face { font-family:'Baran'; src:url('./fonts/baran.ttf'); }
+@font-face { font-family:'DecoThuluth'; src:url('./fonts/DecoType-Thuluth.ttf'); }
+@font-face { font-family:'DecoNaskh'; src:url('./fonts/DecoTypeNaskh-Regular.ttf'); }
+@font-face { font-family:'WaffleMango'; src:url('./fonts/WaffleMango.ttf'); }
+
+/* ===== BACKGROUND ===== */
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#050510;
+    color:white;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+        linear-gradient(rgba(0,255,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.07) 1px, transparent 1px);
+    background-size:40px 40px;
+    animation:gridMove 20s linear infinite;
+    z-index:-1;
+}
+
+@keyframes gridMove{
+    from{background-position:0 0;}
+    to{background-position:40px 40px;}
+}
+
+/* ===== GLASS CONTAINER ===== */
+.container{
+    margin:30px 15px;
+    padding:25px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(0,255,255,0.3);
+    box-shadow:0 0 30px rgba(0,255,255,0.2);
+}
+
+/* ===== TITLE ===== */
+h1{
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    color:#00ffff;
+    text-shadow:0 0 15px #00ffff;
+    letter-spacing:2px;
+}
+
+/* ===== INPUT ===== */
+textarea{
+    width:100%;
+    height:120px;
+    border-radius:12px;
+    border:1px solid rgba(0,255,255,0.4);
+    background:rgba(0,0,0,0.6);
+    color:white;
+    padding:10px;
+    font-size:16px;
+    outline:none;
+}
+
+/* ===== SELECT ===== */
+select{
+    width:100%;
+    margin-top:10px;
+    padding:8px;
+    border-radius:10px;
+    background:black;
+    color:#00ffff;
+    border:1px solid #00ffff;
+}
+
+/* ===== BUTTON ===== */
+.size-btn{
+    margin-top:10px;
+    padding:6px 14px;
+    border-radius:8px;
+    border:none;
+    font-weight:bold;
+    background:#00ffff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.size-btn:hover{
+    box-shadow:0 0 15px #00ffff;
+    transform:scale(1.05);
+}
+
+/* ===== PREVIEW ===== */
+.preview{
+    margin-top:20px;
+    padding:20px;
+    border-radius:15px;
+    background:rgba(0,0,0,0.7);
+    border:1px solid #00ffff;
+    font-size:20px;
+    line-height:1.8;
+    box-shadow:0 0 20px rgba(0,255,255,0.3);
+    transition:0.3s;
+}
+
+.preview:hover{
+    box-shadow:0 0 40px #00ffff;
+}
+
+.footer{
+    margin-top:30px;
+    font-size:12px;
+    opacity:0.6;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>AFHIMNA CYBER</h1>
+
+<textarea id="inputText" placeholder="Tulis teks di sini..."></textarea>
+
+<select id="fontSelector">
+<option value="'Poppins',sans-serif">Poppins</option>
+<option value="'Orbitron',sans-serif">Orbitron</option>
+<option value="'Montserrat',sans-serif">Montserrat</option>
+<option value="'Playfair Display',serif">Playfair</option>
+<option value="'Roboto',sans-serif">Roboto</option>
+<option value="'Amiri',serif">Amiri</option>
+<option value="'Scheherazade New',serif">Scheherazade</option>
+<option value="'Lateef',cursive">Lateef</option>
+<option value="'Aref Ruqaa',serif">Aref Ruqaa</option>
+<option value="'Noto Nastaliq Urdu',serif">Nastaliq</option>
+<option value="DecoThuluth">Deco Thuluth</option>
+<option value="DecoNaskh">Deco Naskh</option>
+<option value="BArabics">BArabics</option>
+<option value="Abomsaab">Abomsaab</option>
+</select>
+
+<br>
+
+<button class="size-btn" onclick="changeSize(-1)">[-]</button>
+<span id="sizeLabel">20 px</span>
+<button class="size-btn" onclick="changeSize(1)">[+]</button>
+
+<div class="preview" id="previewText">
+Preview teks akan muncul di sini
+</div>
+
+<div class="footer">
+© 2025 Afhimna Dev. All Rights Reserved.
+</div>
+
+</div>
+
+<script>
+let fontSize = 20;
+
+const inputText = document.getElementById("inputText");
+const previewText = document.getElementById("previewText");
+const fontSelector = document.getElementById("fontSelector");
+const sizeLabel = document.getElementById("sizeLabel");
+
+inputText.addEventListener("input", updatePreview);
+fontSelector.addEventListener("change", updatePreview);
+
+function updatePreview(){
+    previewText.textContent = inputText.value;
+    previewText.style.fontFamily = fontSelector.value;
+
+    const arabicRegex = /[\u0600-\u06FF]/;
+
+    if(arabicRegex.test(inputText.value)){
+        previewText.dir="rtl";
+        previewText.style.lineHeight="2.1";
+    } else {
+        previewText.dir="ltr";
+        previewText.style.lineHeight="1.6";
+    }
+}
+
+function changeSize(value){
+    fontSize += value;
+    if(fontSize<10) fontSize=10;
+    if(fontSize>150) fontSize=150;
+    previewText.style.fontSize=fontSize+"px";
+    sizeLabel.textContent=fontSize+" px";
+}
+</script>
+
+</body>
+</html>
