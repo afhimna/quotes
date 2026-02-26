@@ -2,15 +2,23 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050510">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <title>AFHIMNA Futuristic Generator</title>
 
-<!-- GOOGLE FONTS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Orbitron:wght@400;700&family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;600&family=Roboto:wght@400;600&family=Amiri&family=Scheherazade+New&family=Lateef&family=Aref+Ruqaa&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
 
 <style>
 
-/* ===== CUSTOM FONTS ===== */
+/* ===== CUSTOM FONTS (tetap sama) ===== */
 @font-face { font-family:'Abdomaster'; src:url('./fonts/abdomaster-semibold.ttf'); }
 @font-face { font-family:'Abo2Sadam'; src:url('./fonts/abo2sadam_regular.ttf'); }
 @font-face { font-family:'Abomsaab'; src:url('./fonts/abomsaab_regular.ttf'); }
@@ -22,117 +30,174 @@
 @font-face { font-family:'DecoNaskh'; src:url('./fonts/DecoTypeNaskh-Regular.ttf'); }
 @font-face { font-family:'WaffleMango'; src:url('./fonts/WaffleMango.ttf'); }
 
-/* ===== BACKGROUND ===== */
-body{
+/* ===== GLOBAL ===== */
+html, body {
     margin:0;
     font-family:'Poppins',sans-serif;
-    background:#050510;
-    color:white;
-    overflow-x:hidden;
+    background:#0e0e12;
+    color:#f1f1f1;
+    min-height:100dvh;
 }
 
-body::before{
-    content:"";
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:
-        linear-gradient(rgba(0,255,255,0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,255,0.07) 1px, transparent 1px);
-    background-size:40px 40px;
-    animation:gridMove 20s linear infinite;
-    z-index:-1;
-}
-
-@keyframes gridMove{
-    from{background-position:0 0;}
-    to{background-position:40px 40px;}
-}
-
-/* ===== GLASS CONTAINER ===== */
+/* ===== CONTAINER ===== */
 .container{
-    margin:30px 15px;
-    padding:25px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(0,255,255,0.3);
-    box-shadow:0 0 30px rgba(0,255,255,0.2);
+    max-width:600px;
+    margin:60px auto;
+    padding:30px;
 }
 
 /* ===== TITLE ===== */
 h1{
     font-family:'Orbitron',sans-serif;
-    font-weight:700;
-    color:#00ffff;
-    text-shadow:0 0 15px #00ffff;
-    letter-spacing:2px;
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:#ffffff;
+    letter-spacing:1px;
+}
+.size-control {
+    display: flex;
+    justify-content: center;   /* rata tengah horizontal */
+    align-items: center;       /* rata tengah vertikal */
+    gap: 12px;                 /* jarak antar tombol dan label */
+    margin-top: 15px;
 }
 
+.size-btn {
+    width:32px;
+    height:32px;
+    border:none;
+    border-radius:50%;
+    background: linear-gradient(135deg, #00ffff, #0088ff);
+    color:#000;
+    font-weight:bold;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:0 3px 6px rgba(0,255,255,0.3);
+}
+
+.size-btn:hover {
+    transform: scale(1.1);
+    box-shadow:0 5px 12px rgba(0,255,255,0.5);
+}
+
+#sizeLabel {
+    min-width:50px;
+    text-align:center;
+    font-size:16px;
+    font-weight:500;
+    color:#ffffff;
+}
 /* ===== INPUT ===== */
+/* ===== TEXTAREA PRESISI ===== */
 textarea{
     width:100%;
     height:120px;
-    border-radius:12px;
-    border:1px solid rgba(0,255,255,0.4);
-    background:rgba(0,0,0,0.6);
-    color:white;
-    padding:10px;
+    box-sizing:border-box;
+
+    padding:14px 16px;
+    border-radius:8px;
+    border:1px solid #2a2a35;
+
+    background:#15151c;
+    color:#ffffff;
+
     font-size:16px;
+    line-height:1.6;
+    letter-spacing:0.2px;
+
+    resize:none;
     outline:none;
+
+    display:block;
+    overflow-y:auto;
+
+    transition:border-color 0.2s ease, background 0.2s ease;
 }
 
-/* ===== SELECT ===== */
+textarea:focus{
+    border-color:#4f46e5;
+    background:#181822;
+}
 select{
     width:100%;
-    margin-top:10px;
-    padding:8px;
-    border-radius:10px;
-    background:black;
-    color:#00ffff;
-    border:1px solid #00ffff;
-}
-
-/* ===== BUTTON ===== */
-.size-btn{
-    margin-top:10px;
-    padding:6px 14px;
+    margin-top:12px;
+    padding:10px;
     border-radius:8px;
-    border:none;
-    font-weight:bold;
-    background:#00ffff;
-    cursor:pointer;
-    transition:0.3s;
+    background:#15151c;
+    color:white;
+    border:1px solid #2a2a35;
+    transition:0.2s;
 }
 
-.size-btn:hover{
-    box-shadow:0 0 15px #00ffff;
-    transform:scale(1.05);
+select:focus{
+    border-color:#4f46e5;
 }
 
 /* ===== PREVIEW ===== */
 .preview{
-    margin-top:20px;
+    margin-top:25px;
     padding:20px;
-    border-radius:15px;
-    background:rgba(0,0,0,0.7);
-    border:1px solid #00ffff;
+    border-radius:10px;
+    background:#15151c;
+    border:1px solid #2a2a35;
     font-size:20px;
-    line-height:1.8;
-    box-shadow:0 0 20px rgba(0,255,255,0.3);
-    transition:0.3s;
+    line-height:1.6;
+    min-height:60px;
+    transition:0.2s;
 }
 
-.preview:hover{
-    box-shadow:0 0 40px #00ffff;
+.preview.animateText{
+    animation:fade 0.2s ease;
 }
 
+@keyframes fade{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+/* ===== FOOTER ===== */
 .footer{
-    margin-top:30px;
+    margin-top:40px;
     font-size:12px;
-    opacity:0.6;
+    opacity:0.4;
+    text-align:center;
 }
 
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+    .container{
+        margin:40px 20px;
+        padding:20px;
+    }
+}
+.neon-btn {
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #00ffff;
+    background: transparent;
+    border: 2px solid #00ffff;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+.neon-btn:hover {
+    color: #000;
+    background: #00ffff;
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff;
+    transform: scale(1.05);
+}
+</style>
 </style>
 </head>
 <body>
@@ -160,14 +225,29 @@ select{
 <option value="Abomsaab">Abomsaab</option>
 </select>
 
+<select id="colorSelector">
+<option value="#00ffff">Cyber Cyan</option>
+<option value="#00ff88">Neon Green</option>
+<option value="#ff00ff">Neon Pink</option>
+<option value="#ffcc00">Golden Glow</option>
+<option value="#ff4444">Laser Red</option>
+<option value="#ffffff">Pure White</option>
+<option value="#a855f7">Electric Purple</option>
+<option value="#38bdf8">Sky Blue</option>
+<option value="#f97316">Orange Flame</option>
+<option value="#10b981">Emerald</option>
+</select>
+
 <br>
-
-<button class="size-btn" onclick="changeSize(-1)">[-]</button>
-<span id="sizeLabel">20 px</span>
-<button class="size-btn" onclick="changeSize(1)">[+]</button>
-
+<div class="size-control">
+  <button class="size-btn" onclick="changeSize(-1)">-</button>
+  <span id="sizeLabel">20 px</span>
+  <button class="size-btn" onclick="changeSize(1)">+</button>
+</div>
 <div class="preview" id="previewText">
 Preview teks akan muncul di sini
+<br>
+<button class="neon-btn" onclick="exportText()">💾 Ekspor Hasil (Transparan)</button>
 </div>
 
 <div class="footer">
@@ -182,14 +262,17 @@ let fontSize = 20;
 const inputText = document.getElementById("inputText");
 const previewText = document.getElementById("previewText");
 const fontSelector = document.getElementById("fontSelector");
+const colorSelector = document.getElementById("colorSelector");
 const sizeLabel = document.getElementById("sizeLabel");
 
 inputText.addEventListener("input", updatePreview);
 fontSelector.addEventListener("change", updatePreview);
+colorSelector.addEventListener("change", updatePreview);
 
 function updatePreview(){
     previewText.textContent = inputText.value;
     previewText.style.fontFamily = fontSelector.value;
+    previewText.style.color = colorSelector.value;
 
     const arabicRegex = /[\u0600-\u06FF]/;
 
@@ -200,6 +283,10 @@ function updatePreview(){
         previewText.dir="ltr";
         previewText.style.lineHeight="1.6";
     }
+
+    previewText.classList.remove("animateText");
+    void previewText.offsetWidth;
+    previewText.classList.add("animateText");
 }
 
 function changeSize(value){
@@ -208,6 +295,52 @@ function changeSize(value){
     if(fontSize>150) fontSize=150;
     previewText.style.fontSize=fontSize+"px";
     sizeLabel.textContent=fontSize+" px";
+}
+// Prevent zoom double tap iOS
+document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+});
+
+// Improve performance mobile
+window.addEventListener("resize", () => {
+    previewText.style.fontSize = fontSize + "px";
+});
+function exportText() {
+    const text = inputText.value;
+    const font = fontSelector.value;
+    const color = colorSelector.value;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Atur ukuran canvas sesuai panjang dan font
+    ctx.font = fontSize + "px " + font;
+    const textWidth = ctx.measureText(text).width;
+    const textHeight = fontSize * 1.6;
+    canvas.width = textWidth + 20;
+    canvas.height = textHeight + 20;
+
+    // Reset font dan alignment
+    ctx.font = fontSize + "px " + font;
+    ctx.fillStyle = color;
+    ctx.textBaseline = "top";
+
+    // Untuk teks Arab atau RTL
+    const arabicRegex = /[\u0600-\u06FF]/;
+    if(arabicRegex.test(text)){
+        ctx.direction = "rtl";
+        ctx.textAlign = "right";
+        ctx.fillText(text, canvas.width - 10, 10);
+    } else {
+        ctx.direction = "ltr";
+        ctx.textAlign = "left";
+        ctx.fillText(text, 10, 10);
+    }
+
+    // Buat link download
+    const link = document.createElement("a");
+    link.download = "hasil_teks.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
 }
 </script>
 
