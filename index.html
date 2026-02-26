@@ -14,22 +14,90 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Orbitron:wght@400;700&family=Montserrat:wght@400;600&family=Playfair+Display:wght@400;600&family=Roboto:wght@400;600&family=Amiri&family=Scheherazade+New&family=Lateef&family=Aref+Ruqaa&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Lateef&family=Aref+Ruqaa&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
 
 <style>
+/* ===== CUSTOM FONTS FROM REPO ===== */
 
-/* ===== CUSTOM FONTS (tetap sama) ===== */
-@font-face { font-family:'Abdomaster'; src:url('./fonts/abdomaster-semibold.ttf'); }
-@font-face { font-family:'Abo2Sadam'; src:url('./fonts/abo2sadam_regular.ttf'); }
-@font-face { font-family:'Abomsaab'; src:url('./fonts/abomsaab_regular.ttf'); }
-@font-face { font-family:'AdvertisingBold'; src:url('./fonts/advertisingbold_regular.ttf'); }
-@font-face { font-family:'ArslanWessam'; src:url('./fonts/ArslanWessamA.ttf'); }
-@font-face { font-family:'BArabics'; src:url('./fonts/BArabics.ttf'); }
-@font-face { font-family:'Baran'; src:url('./fonts/baran.ttf'); }
-@font-face { font-family:'DecoThuluth'; src:url('./fonts/DecoType-Thuluth.ttf'); }
-@font-face { font-family:'DecoNaskh'; src:url('./fonts/DecoTypeNaskh-Regular.ttf'); }
-@font-face { font-family:'WaffleMango'; src:url('./fonts/WaffleMango.ttf'); }
+@font-face{
+  font-family:'ArslanWessam';
+  src:url('font/ArslanWessamA.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
 
+@font-face{
+  font-family:'BArabics';
+  src:url('font/BArabics.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'DecoThuluth';
+  src:url('font/DecoType-Thuluth.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'DecoNaskh';
+  src:url('font/DecoType Naskh Regular.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'WaffleMango';
+  src:url('font/Waffle Mango.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'Abdomaster';
+  src:url('font/abdomaster-semibold.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'Abo2Sadam';
+  src:url('font/abo2sadam_regular.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'Abomsaab';
+  src:url('font/abomsaab_regular.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'AdvertisingBold';
+  src:url('font/advertisingbold_regular.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+@font-face{
+  font-family:'Baran';
+  src:url('font/baran.ttf') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
 /* ===== GLOBAL ===== */
 html, body {
     margin:0;
@@ -229,11 +297,6 @@ select:focus{
 <textarea id="inputText" placeholder="Tulis teks di sini..."></textarea>
 
 <select id="fontSelector">
-<option value="'Poppins',sans-serif">Poppins</option>
-<option value="'Orbitron',sans-serif">Orbitron</option>
-<option value="'Montserrat',sans-serif">Montserrat</option>
-<option value="'Playfair Display',serif">Playfair</option>
-<option value="'Roboto',sans-serif">Roboto</option>
 <option value="'Amiri',serif">Amiri</option>
 <option value="'Scheherazade New',serif">Scheherazade</option>
 <option value="'Lateef',cursive">Lateef</option>
@@ -329,38 +392,69 @@ window.addEventListener("resize", () => {
 });
 function exportText() {
     const text = inputText.value;
+    if (!text.trim()) return;
+
     const font = fontSelector.value;
     const color = colorSelector.value;
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    // Atur ukuran canvas sesuai panjang dan font
-    ctx.font = fontSize + "px " + font;
-    const textWidth = ctx.measureText(text).width;
-    const textHeight = fontSize * 1.6;
-    canvas.width = textWidth + 20;
-    canvas.height = textHeight + 20;
+    const scale = 3; // HD level (boleh 2 / 3 / 4)
+    const padding = 10;
+    const lines = text.split("\n");
 
-    // Reset font dan alignment
+    // Set font dulu untuk ukur teks
+    ctx.font = fontSize + "px " + font;
+
+    // Hitung lebar maksimum
+    let maxWidth = 0;
+    lines.forEach(line => {
+        const width = ctx.measureText(line).width;
+        if (width > maxWidth) maxWidth = width;
+    });
+
+    const lineHeight = fontSize * 1.8;
+    const textHeight = lineHeight * lines.length;
+
+    // HD resolution
+    canvas.width = (maxWidth + padding * 2) * scale;
+    canvas.height = (textHeight + padding * 2) * scale;
+
+    // Supaya tetap transparan (tidak perlu fill background)
+    ctx.scale(scale, scale);
+
     ctx.font = fontSize + "px " + font;
     ctx.fillStyle = color;
     ctx.textBaseline = "top";
 
-    // Untuk teks Arab atau RTL
     const arabicRegex = /[\u0600-\u06FF]/;
-    if(arabicRegex.test(text)){
+
+    if (arabicRegex.test(text)) {
         ctx.direction = "rtl";
         ctx.textAlign = "right";
-        ctx.fillText(text, canvas.width - 10, 10);
+        lines.forEach((line, i) => {
+            ctx.fillText(
+                line,
+                maxWidth + padding,
+                padding + (i * lineHeight)
+            );
+        });
     } else {
         ctx.direction = "ltr";
         ctx.textAlign = "left";
-        ctx.fillText(text, 10, 10);
+        lines.forEach((line, i) => {
+            ctx.fillText(
+                line,
+                padding,
+                padding + (i * lineHeight)
+            );
+        });
     }
 
-    // Buat link download
+    // Download transparan PNG
     const link = document.createElement("a");
-    link.download = "hasil_teks.png";
+    link.download = "AFHIMNA_HD_TRANSPARENT.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
 }
