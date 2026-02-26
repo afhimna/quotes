@@ -108,6 +108,7 @@ textarea{
 
     font-size:16px;
     line-height:1.6;
+    text-align:right;
     letter-spacing:0.2px;
 
     resize:none;
@@ -147,6 +148,7 @@ select:focus{
     border:1px solid #2a2a35;
     font-size:20px;
     line-height:1.6;
+    text-align:center;
     min-height:60px;
     transition:0.2s;
 }
@@ -190,7 +192,25 @@ select:focus{
     transition: 0.3s;
     box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff;
 }
+.export-btn{
+    width:100%;
+    margin-top:20px;
+}
 
+.preview{
+    margin-top:25px;
+    padding:20px;
+    border-radius:14px;
+    background:rgba(21,21,28,0.85);
+    backdrop-filter:blur(10px);
+    border:1px solid #2a2a35;
+    font-size:20px;
+    line-height:1.6;
+    min-height:80px;
+    transition:0.2s;
+    overflow-wrap:break-word;
+    word-break:break-word;
+}
 .neon-btn:hover {
     color: #000;
     background: #00ffff;
@@ -246,9 +266,11 @@ select:focus{
 </div>
 <div class="preview" id="previewText">
 Preview teks akan muncul di sini
-<br>
-<button class="neon-btn" onclick="exportText()">💾 Ekspor Hasil (Transparan)</button>
 </div>
+
+<button class="neon-btn export-btn" onclick="exportText()">
+💾 Ekspor Hasil (Transparan)
+</button>
 
 <div class="footer">
 © 2025 Afhimna Dev. All Rights Reserved.
