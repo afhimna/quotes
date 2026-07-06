@@ -531,7 +531,9 @@ function drawJustifiedLine(ctx, line, y, padding, maxWidth, isArabic){
 
 }
 async function exportText() {
+
     const text = inputText.value;
+
     if (!text.trim()) return;
 
     await document.fonts.ready;
@@ -541,133 +543,173 @@ async function exportText() {
     const align = alignSelector.value;
     const lineHeight = parseFloat(lineHeightSelector.value);
 
+    const scale = 8;
+
+    const padding = fontSize * 1.5;
+
+    const lines = text.split("\n");
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const scale = 10;
-    const lines = text.split("\n");
+    const renderFontSize = fontSize * scale;
 
-    ctx.font = fontSize + "px " + font;
+    ctx.font = `${renderFontSize}px ${font}`;
 
     let maxWidth = 0;
     let totalHeight = 0;
 
-    const metricsData = lines.map(line => {
+    const metricsData = [];
+
+    for (const line of lines) {
 
         const metrics = ctx.measureText(line);
 
-        const ascent = metrics.actualBoundingBoxAscent || fontSize * 1.5;
-        const descent = metrics.actualBoundingBoxDescent || fontSize * 0.8;
+        const ascent =
+            metrics.actualBoundingBoxAscent ||
+            renderFontSize * 0.8;
+
+        const descent =
+            metrics.actualBoundingBoxDescent ||
+            renderFontSize * 0.25;
+
         const height = ascent + descent;
 
-        maxWidth = Math.max(maxWidth, metrics.width);
-
-        totalHeight += height * lineHeight;
-
-        return {
+        metricsData.push({
             line,
             width: metrics.width,
             ascent,
             descent,
             height
-        };
+        });
+                if (metrics.width > maxWidth) {
+            maxWidth = metrics.width;
+        }
 
-    });
+        totalHeight += height * lineHeight;
 
-    const padding = fontSize * 1.15;
+    }
 
-    canvas.width = (maxWidth + padding * 2) * scale;
-    canvas.height = (totalHeight + padding * 2) * scale;
+    canvas.width = Math.ceil(maxWidth + (padding * scale * 2));
+    canvas.height = Math.ceil(totalHeight + (padding * scale * 2));
 
-    ctx.scale(scale, scale);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.font = fontSize + "px " + font;
+    ctx.font = `${renderFontSize}px ${font}`;
     ctx.fillStyle = color;
     ctx.textBaseline = "alphabetic";
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     const arabicRegex = /[\u0600-\u06FF]/;
+
     const isArabic = arabicRegex.test(text);
 
     ctx.direction = isArabic ? "rtl" : "ltr";
 
-    let y = padding;
+    let y = padding * scale;
+
+    const contentWidth = canvas.width - (padding * scale * 2);
 
     metricsData.forEach((item, index) => {
 
-    y += item.ascent;
+        y += item.ascent;
 
-    let x;
+        let x;
 
-    switch (align) {
+        switch (align) {
 
-        case "left":
-            ctx.textAlign = "left";
-            x = padding;
-            break;
+            case "left":
+                ctx.textAlign = "left";
+                x = padding * scale;
+                break;
 
-        case "center":
-            ctx.textAlign = "center";
-            x = canvas.width / scale / 2;
-            break;
+            case "center":
+                            ctx.textAlign = "center";
+                x = canvas.width / 2;
+                break;
 
-        case "right":
-            ctx.textAlign = "right";
-            x = canvas.width / scale - padding;
-            break;
+            case "right":
+                ctx.textAlign = "right";
+                x = canvas.width - (padding * scale);
+                break;
 
-        case "justify":
-            ctx.textAlign = isArabic ? "right" : "left";
-            x = isArabic
-                ? canvas.width / scale - padding
-                : padding;
-            break;
+            case "justify":
+                ctx.textAlign = isArabic ? "right" : "left";
+                x = isArabic
+                    ? canvas.width - (padding * scale)
+                    : (padding * scale);
+                break;
 
-        default:
-            ctx.textAlign = isArabic ? "right" : "left";
-            x = isArabic
-                ? canvas.width / scale - padding
-                : padding;
-    }
+            default:
+                ctx.textAlign = isArabic ? "right" : "left";
+                x = isArabic
+                    ? canvas.width - (padding * scale)
+                    : (padding * scale);
 
-    // =========================
-    // MODE BIASA
-    // =========================
-    if (align !== "justify") {
+        }
 
-        ctx.fillText(item.line, x, y);
+        if (align !== "justify" || index === metricsData.length - 1) {
 
-    }
+            ctx.fillText(item.line, x, y);
 
-    // MODE JUSTIFY
-else{
+        } else {
 
-    if(index === metricsData.length-1){
-
-        ctx.fillText(item.line,x,y);
-
-    }else{
-
-        drawJustifiedLine(
-            ctx,
-            item.line,
-            y,
-            padding,
-            maxWidth,
-            isArabic
-        );
-
-    }
-
+            drawJustifiedLineHD(
+                ctx,
+                item.line,
+                y,
+                padding * scale,
+                contentWidth,
+                isArabic
+            );
+        }
+        y += (item.height * lineHeight) - item.ascent;
+    });
+        const link = document.createElement("a");
+    link.download = "Story.png";
+    link.href = canvas.toDataURL("image/png", 1.0);
+    link.click();
 }
-
-    y += (item.height * lineHeight) - item.ascent;
-
-});
-
-const link = document.createElement("a");
-link.download = "Story.png";
-link.href = canvas.toDataURL("image/png");
-link.click();
+function drawJustifiedLineHD(
+    ctx,
+    line,
+    y,
+    padding,
+    maxWidth,
+    isArabic
+) {
+    const words = line.trim().split(/\s+/);
+    if (words.length <= 1) {
+        ctx.textAlign = isArabic ? "right" : "left";
+        ctx.fillText(
+            line,
+            isArabic ? maxWidth + padding : padding,
+            y
+        );
+        return;
+    }
+    const wordWidths = words.map(w => ctx.measureText(w).width);
+    const totalWordsWidth =
+        wordWidths.reduce((a, b) => a + b, 0);
+    const gap =
+        (maxWidth - totalWordsWidth) /
+        (words.length - 1);
+    if (isArabic) {
+        let x = padding + maxWidth;
+        for (let i = 0; i < words.length; i++) {
+            ctx.textAlign = "right";
+            ctx.fillText(words[i], x, y);
+            x -= wordWidths[i] + gap;
+        }
+    } else {
+        let x = padding;
+        for (let i = 0; i < words.length; i++) {
+            ctx.textAlign = "left";
+            ctx.fillText(words[i], x, y);
+            x += wordWidths[i] + gap;
+        }
+    }
 }
 </script>
 
