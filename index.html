@@ -342,6 +342,22 @@ select:focus{
     <option value="justify">Rata Penuh (Smart)</option>
 </select>
 
+<select id="lineHeightSelector">
+    <option value="0.5">Jarak Baris 0.5</option>
+    <option value="0.6">Jarak Baris 0.6</option>
+    <option value="0.7">Jarak Baris 0.7</option>
+    <option value="0.8">Jarak Baris 0.8</option>
+    <option value="0.9">Jarak Baris 0.9</option>
+    <option value="1">Jarak Baris 1.0</option>
+    <option value="1.2">Jarak Baris 1.2</option>
+    <option value="1.4">Jarak Baris 1.4</option>
+    <option value="1.6" selected>Jarak Baris 1.6</option>
+    <option value="1.8">Jarak Baris 1.8</option>
+    <option value="2">Jarak Baris 2.0</option>
+    <option value="2.5">Jarak Baris 2.5</option>
+    <option value="3">Jarak Baris 3.0</option>
+</select>
+
 <br>
 <div class="size-control">
   <button class="size-btn" onclick="changeSize(-1)">-</button>
@@ -370,12 +386,14 @@ const previewText = document.getElementById("previewText");
 const fontSelector = document.getElementById("fontSelector");
 const colorSelector = document.getElementById("colorSelector");
 const alignSelector = document.getElementById("alignSelector");
+const lineHeightSelector = document.getElementById("lineHeightSelector");
 const sizeLabel = document.getElementById("sizeLabel");
 
 inputText.addEventListener("input", updatePreview);
 fontSelector.addEventListener("change", updatePreview);
 colorSelector.addEventListener("change", updatePreview);
 alignSelector.addEventListener("change", updatePreview);
+lineHeightSelector.addEventListener("change", updatePreview);
 
 function updatePreview(){
     const text = inputText.value;
@@ -387,14 +405,15 @@ function updatePreview(){
     previewText.style.textAlign = alignSelector.value;
     
     const arabicRegex = /[\u0600-\u06FF]/;
+const selectedLineHeight = lineHeightSelector.value;
 
-    if(arabicRegex.test(inputText.value)){
-        previewText.dir="rtl";
-        previewText.style.lineHeight="2.1";
-    } else {
-        previewText.dir="ltr";
-        previewText.style.lineHeight="1.6";
-    }
+if(arabicRegex.test(inputText.value)){
+    previewText.dir = "rtl";
+}else{
+    previewText.dir = "ltr";
+}
+
+previewText.style.lineHeight = selectedLineHeight;
     
     lines.forEach((line,index)=>{
 
@@ -520,6 +539,7 @@ async function exportText() {
     const font = fontSelector.value;
     const color = colorSelector.value;
     const align = alignSelector.value;
+    const lineHeight = parseFloat(lineHeightSelector.value);
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -542,7 +562,7 @@ async function exportText() {
 
         maxWidth = Math.max(maxWidth, metrics.width);
 
-        totalHeight += height * 0.9;
+        totalHeight += height * lineHeight;
 
         return {
             line,
@@ -640,12 +660,12 @@ else{
 
 }
 
-    y += item.descent + (fontSize * 0.5);
+    y += (item.height * lineHeight) - item.ascent;
 
 });
 
 const link = document.createElement("a");
-link.download = "AFHIMNA_ULTRA_HD.png";
+link.download = "Story.png";
 link.href = canvas.toDataURL("image/png");
 link.click();
 }
